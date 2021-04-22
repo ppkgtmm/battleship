@@ -4,6 +4,6 @@ import { Role } from '../enums';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 
-export function Auth(roles: Role[]) {
+export function Auth(...roles: Role[]) {
   return applyDecorators(Roles(...roles), UseGuards(JwtAuthGuard, RolesGuard));
 }

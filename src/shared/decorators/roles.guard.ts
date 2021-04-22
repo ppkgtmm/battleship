@@ -21,7 +21,10 @@ export class RolesGuard implements CanActivate {
     }
     const { user } = context.switchToHttp().getRequest();
     const truth =
-      user && user.game_id && user.role && roles.includes(user.role);
+      user &&
+      user.game_id &&
+      user.role &&
+      Object.values(roles).includes(user.role);
     if (!truth) {
       throw new ForbiddenException({
         message: 'not permitted for the action',
