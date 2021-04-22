@@ -44,7 +44,6 @@ export class CoordinateService {
       coordinate.x = is_verticle ? start_x : start_x + i;
       coordinate.y = is_verticle ? start_y + i : start_y;
       coordinate.is_hit = false;
-      coordinate.hit_time = null;
       coordinates.push(coordinate);
     }
     return coordinates;

@@ -19,6 +19,6 @@ import { GameService } from './game.service';
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
   ],
   providers: [GameService, AuthProvider, JwtStrategy],
-  exports: [GameService],
+  exports: [GameService, AuthProvider],
 })
 export class GameModule {}

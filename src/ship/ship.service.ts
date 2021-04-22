@@ -89,4 +89,10 @@ export class ShipService {
     newShip.coordinates = shipCoordinates;
     return await newShip.save();
   }
+
+  async getAllShips(game_id: string, sunkOnly: boolean) {
+    const query = { game: game_id };
+    if (sunkOnly) query['is_sunk'] = true;
+    return await this.shipModel.find(query).exec();
+  }
 }

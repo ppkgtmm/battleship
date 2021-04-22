@@ -8,8 +8,7 @@ import {
   TIME,
   Role,
 } from '../../shared';
-import { EnterGameDto } from '../../shared/dtos/enterGame.dto';
-import { Game } from '../../schemas';
+import { EnterGameDto } from '../../shared';
 
 @Injectable()
 export class AuthProvider {
@@ -52,7 +51,7 @@ export class AuthProvider {
     return this.jwtService.sign(payload, { expiresIn: TIME });
   }
 
-  async validate(jwtPayload: JWTPayload): Promise<JWTPayload & Game> {
+  async validate(jwtPayload: JWTPayload) {
     const { game_id, id, role } = jwtPayload;
     const query: GamePayload = { _id: game_id };
 

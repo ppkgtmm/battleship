@@ -39,7 +39,7 @@ export class GameService {
     return await game.save();
   }
 
-  async findByPayload(payload: Payload): Promise<GameDocument> {
+  async findByPayload(payload: Payload) {
     return await this.gameModel.findOne(payload).exec();
   }
 
@@ -69,28 +69,4 @@ export class GameService {
     };
     return await this.gameModel.findByIdAndUpdate(authData.id, query).exec();
   }
-  // private async getShipStatus(game_id: any, role: Role) {
-  //   const query: any = { game: game_id };
-  //   if (role === 'ATTACKER') {
-  //     query.is_sunk = true;
-  //   }
-  //   const ships = await this.shipModel.find(query).exec();
-  //   return ships;
-  // }
-
-  // async getStatus(authData: TokenBody & Game) {
-  //   const { game_id } = authData;
-  //   const userRole = authData.role;
-  //   if (!Object.values(role).includes(userRole)) {
-  //     throw new UnauthorizedException({
-  //       message: 'invalid credentials provided',
-  //     });
-  //   }
-  //   const history = await this.getBoardHistory(game_id);
-  //   const shipStatus = await this.getShipStatus(game_id, userRole);
-  //   return {
-  //     attacks: history,
-  //     ships: shipStatus,
-  //   };
-  // }
 }

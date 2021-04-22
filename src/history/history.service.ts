@@ -17,11 +17,13 @@ export class HistoryService {
     return await newHistory.save();
   }
 
-  async getBoardHistory(game_id: string, coordinate?: Coordinate) {
-    let history = await this.historyModel.findOne({ game: game_id }).exec();
+  async getBoardHistory(game_id: string) {
+    return await this.historyModel.findOne({ game: game_id }).exec();
+  }
+
+  async getOrCreateBoardHistory(game_id: string, coordinate: Coordinate) {
+    let history = await this.getBoardHistory(game_id);
     if (history) return { history, isNew: false };
-    if (!coordinate)
-      throw new Error('hit coordinate not supplied for creating history');
     history = await this.createNewHistory(coordinate);
     return { history, isNew: true };
   }
@@ -36,7 +38,10 @@ export class HistoryService {
   }
 
   async recordAttack(game_id: string, coordinate: Coordinate) {
-    const { history, isNew } = await this.getBoardHistory(game_id, coordinate);
+    const { history, isNew } = await this.getOrCreateBoardHistory(
+      game_id,
+      coordinate,
+    );
     if (isNew) return history;
     badRequestExceptionThrower(
       HistoryService.isShotCoord(history, coordinate),
