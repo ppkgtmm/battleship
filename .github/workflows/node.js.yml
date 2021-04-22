@@ -1,0 +1,39 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: battleship CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env: # Or as an environment variable
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        DB_URL: ${{ secrets.DB_URL }}
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+        mongodb-version: [4.0, 4.2]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Start MongoDB v${{ matrix.mongodb-version }}
+      uses: supercharge/mongodb-github-action@1.2.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+         
+    - run: npm install
+    - run: DB_URL=${DB_URL} PRIVATE_KEY=${PRIVATE_KEY} npm run build --if-present
+    - run: DB_URL=${DB_URL} PRIVATE_KEY=${PRIVATE_KEY} npm run test:e2e
