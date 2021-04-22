@@ -6,6 +6,7 @@ import { CoordinateModule } from './coordinate/coordinate.module';
 import { ShipModule } from './ship/ship.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     HistoryModule,
     CoordinateModule,
     ShipModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],

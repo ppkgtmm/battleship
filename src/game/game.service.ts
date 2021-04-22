@@ -44,10 +44,10 @@ export class GameService {
 
   async updateGameStatus(authData: JWTPayload & Game, attackResult: HitResult) {
     const gameObject = new this.gameModel(authData);
-    if (attackResult == HitResult.MISS) gameObject.miss_count += 1;
+    if (attackResult === HitResult.MISS) gameObject.miss_count += 1;
     else gameObject.hit_count += 1;
-    if (attackResult == HitResult.SUNK) gameObject.ship_sunk += 1;
-    if (gameObject.ship_sunk == TOTAL_SHIPS) gameObject.game_over = true;
+    if (attackResult === HitResult.SUNK) gameObject.ship_sunk += 1;
+    if (gameObject.ship_sunk === TOTAL_SHIPS) gameObject.game_over = true;
     const { game_over, ship_sunk, hit_count, miss_count } = gameObject.toJSON();
     return await this.gameModel
       .findByIdAndUpdate(authData.id, {

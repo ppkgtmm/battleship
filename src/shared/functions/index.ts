@@ -1,5 +1,6 @@
-import { Coordinate } from '../../schemas';
+import { Coordinate, Ship } from '../../schemas';
 import { HitCoordinate } from '../interfaces';
+import { HitResult } from '../enums';
 
 export function getCoordinateIndex(
   coordinates: Coordinate[],
@@ -10,4 +11,10 @@ export function getCoordinateIndex(
       return Number(index);
   }
   return -1;
+}
+
+export function getHitResult(hitShip: Ship) {
+  if (!hitShip) return HitResult.MISS;
+  if (hitShip.is_sunk) return HitResult.SUNK;
+  return HitResult.HIT;
 }
