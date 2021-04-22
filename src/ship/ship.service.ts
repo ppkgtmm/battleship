@@ -1,5 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { getCoordinateIndex, HitCoordinate, HitResult } from '../shared';
+import {
+  badRequestExceptionThrower,
+  BOARD_SIZE,
+  getCoordinateIndex,
+  ICoordinate,
+  ShipBoundary,
+  ShipType,
+} from '../shared';
 import { Model } from 'mongoose';
 import { Coordinate, Ship, ShipDocument } from '../schemas';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,7 +17,7 @@ export class ShipService {
     @InjectModel(Ship.name)
     private shipModel: Model<ShipDocument>,
   ) {}
-  async getShipByCoordinate(game_id: string, coordinate: HitCoordinate) {
+  async getShipByCoordinate(game_id: string, coordinate: ICoordinate) {
     const { x, y } = coordinate;
     return await this.shipModel
       .findOne({
@@ -38,5 +45,48 @@ export class ShipService {
     const shipNotSUnk = ShipService.shipNotSunk(hitShip.coordinates);
     if (!shipNotSUnk) hitShip.is_sunk = true;
     return await hitShip.save();
+  }
+
+  private static getShipBoundary(coordinates: Coordinate[]) {
+    const start = coordinates[0];
+    const end = coordinates.slice(-1)[0];
+    return {
+      left: start.x === 1 ? start.x : start.x - 1,
+      right: end.x === BOARD_SIZE ? end.x : end.x + 1,
+      up: start.y === 1 ? start.y : start.y - 1,
+      down: end.y === BOARD_SIZE ? end.y : end.y + 1,
+    };
+  }
+
+  async checkNoShipsAround(game_id: string, boundary: ShipBoundary) {
+    const query = {
+      game: game_id,
+      coordinates: {
+        $elemMatch: {
+          x: { $gte: boundary.left, $lte: boundary.right },
+          y: { $gte: boundary.up, $lte: boundary.down },
+        },
+      },
+    };
+    const ships: ShipDocument[] = await this.shipModel.find(query).exec();
+
+    badRequestExceptionThrower(
+      ships && ships.length > 0,
+      'ships must have least one square between them in all directions',
+    );
+  }
+
+  async placeShip(
+    game_id: string,
+    shipType: ShipType,
+    shipCoordinates: Coordinate[],
+  ) {
+    const shipBoundary = ShipService.getShipBoundary(shipCoordinates);
+    await this.checkNoShipsAround(game_id, shipBoundary);
+    const newShip = new this.shipModel();
+    newShip.game = game_id;
+    newShip.type = shipType;
+    newShip.coordinates = shipCoordinates;
+    return await newShip.save();
   }
 }

@@ -21,7 +21,7 @@ export interface GamePayload {
   attacker_id?: string;
 }
 
-export interface HitCoordinate {
+export interface ICoordinate {
   x: number;
   y: number;
 }
@@ -31,4 +31,11 @@ export interface CoordError {
   int: string;
   min: string;
   max: string;
+}
+
+export interface ShipBoundary {
+  up: number;
+  down: number;
+  left: number;
+  right: number;
 }

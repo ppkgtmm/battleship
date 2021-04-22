@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { HistoryService } from './history/history.service';
 import {
   AttackDto,
+  badRequestExceptionThrower,
   getHitResult,
   HitResult,
   JWTPayload,
+  maxShips,
+  ShipDto,
   ShipType,
   TOTAL_SHIPS,
 } from './shared';
-import { Game } from './schemas';
-import { BadRequestException } from '@nestjs/common/exceptions';
+import { Game, GameDocument } from './schemas';
 import { CoordinateService } from './coordinate/coordinate.service';
 import { ShipService } from './ship/ship.service';
 import { GameService } from './game/game.service';
@@ -24,7 +26,7 @@ export class AppService {
   ) {}
 
   private static getAttackResponse(hitResult: HitResult, shipType: ShipType) {
-    if (!shipType || hitResult !== HitResult.SUNK)
+    if (hitResult !== HitResult.SUNK)
       return {
         status: hitResult,
         message: `It was a ${hitResult}`,
@@ -36,15 +38,14 @@ export class AppService {
   }
 
   async handleAttack(authData: JWTPayload & Game, attackData: AttackDto) {
-    if (authData.game_over)
-      throw new BadRequestException({
-        message: 'all ships have been sunk already',
-      });
-    if (authData.total_ships !== TOTAL_SHIPS) {
-      throw new BadRequestException({
-        message: 'defender has not placed all ships yet',
-      });
-    }
+    badRequestExceptionThrower(
+      authData.game_over,
+      'all ships have been sunk already',
+    );
+    badRequestExceptionThrower(
+      authData.total_ships !== TOTAL_SHIPS,
+      'defender has not placed all ships yet',
+    );
     const coordinate = this.coordinateService.createCoordObject(
       attackData,
       true,
@@ -57,5 +58,27 @@ export class AppService {
     const hitResult = getHitResult(hitShip);
     await this.gameService.updateGameStatus(authData, hitResult);
     return AppService.getAttackResponse(hitResult, hitShip?.type);
+  }
+
+  async handlePlaceShip(
+    authData: GameDocument & JWTPayload,
+    shipType: ShipType,
+    data: ShipDto,
+  ) {
+    badRequestExceptionThrower(
+      authData[shipType] == maxShips[shipType],
+      `maximum amount of ${shipType} reached`,
+    );
+    const shipCoordinates = this.coordinateService.createShipCoords(
+      data,
+      shipType,
+    );
+    const newShip = await this.shipService.placeShip(
+      authData.game_id,
+      shipType,
+      shipCoordinates,
+    );
+    await this.gameService.updateGameShipCount(authData, shipType);
+    return newShip;
   }
 }

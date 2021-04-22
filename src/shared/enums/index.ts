@@ -9,7 +9,6 @@ export enum ShipType {
   DESTROYER = 'destroyer',
   SUBMARINE = 'submarine',
 }
-
 export enum HitResult {
   HIT = 'hit',
   MISS = 'miss',

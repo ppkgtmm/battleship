@@ -7,6 +7,7 @@ import {
   GamePayload as Payload,
   HitResult,
   JWTPayload,
+  ShipType,
   TOTAL_SHIPS,
 } from '../shared';
 
@@ -43,12 +44,14 @@ export class GameService {
   }
 
   async updateGameStatus(authData: JWTPayload & Game, attackResult: HitResult) {
-    const gameObject = new this.gameModel(authData);
-    if (attackResult === HitResult.MISS) gameObject.miss_count += 1;
-    else gameObject.hit_count += 1;
-    if (attackResult === HitResult.SUNK) gameObject.ship_sunk += 1;
-    if (gameObject.ship_sunk === TOTAL_SHIPS) gameObject.game_over = true;
-    const { game_over, ship_sunk, hit_count, miss_count } = gameObject.toJSON();
+    let game_over = authData.game_over;
+    let ship_sunk = authData.ship_sunk;
+    let hit_count = authData.hit_count;
+    let miss_count = authData.miss_count;
+    if (attackResult === HitResult.MISS) miss_count += 1;
+    else hit_count += 1;
+    if (attackResult === HitResult.SUNK) ship_sunk += 1;
+    if (ship_sunk === TOTAL_SHIPS) game_over = true;
     return await this.gameModel
       .findByIdAndUpdate(authData.id, {
         game_over,
@@ -57,6 +60,14 @@ export class GameService {
         miss_count,
       })
       .exec();
+  }
+
+  async updateGameShipCount(authData: JWTPayload & Game, shipType: ShipType) {
+    const query = {
+      [shipType]: authData[shipType] + 1,
+      total_ships: authData.total_ships + 1,
+    };
+    return await this.gameModel.findByIdAndUpdate(authData.id, query).exec();
   }
   // private async getShipStatus(game_id: any, role: Role) {
   //   const query: any = { game: game_id };

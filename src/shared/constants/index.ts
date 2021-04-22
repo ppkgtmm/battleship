@@ -13,6 +13,20 @@ export const SUBMARINE_SIZE = 3;
 
 export const TIME = 3600;
 
+export const shipSize = {
+  battleship: BATTLESHIP_SIZE,
+  cruiser: CRUISER_SIZE,
+  destroyer: DESTROYER_SIZE,
+  submarine: SUBMARINE_SIZE,
+};
+
+export const maxShips = {
+  battleship: MAX_BATTLESHIP,
+  cruiser: MAX_CRUISER,
+  destroyer: MAX_DESTROYER,
+  submarine: MAX_SUBMARINE,
+};
+
 export const coordError = {
   x: {
     empty: 'x of coordinate is required',

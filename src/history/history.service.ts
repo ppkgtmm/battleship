@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Coordinate, History, HistoryDocument } from '../schemas';
 import { Model } from 'mongoose';
-import { BadRequestException } from '@nestjs/common/exceptions';
-import { getCoordinateIndex } from '../shared';
+import { badRequestExceptionThrower, getCoordinateIndex } from '../shared';
 
 @Injectable()
 export class HistoryService {
@@ -39,10 +38,10 @@ export class HistoryService {
   async recordAttack(game_id: string, coordinate: Coordinate) {
     const { history, isNew } = await this.getBoardHistory(game_id, coordinate);
     if (isNew) return history;
-    if (HistoryService.isShotCoord(history, coordinate))
-      throw new BadRequestException({
-        message: 'coordinate already hit',
-      });
+    badRequestExceptionThrower(
+      HistoryService.isShotCoord(history, coordinate),
+      'coordinate already hit',
+    );
     history.coord_hit.push(coordinate);
     return await history.save();
   }
