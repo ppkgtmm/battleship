@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   AttackDto,
@@ -25,23 +25,27 @@ export class AppController {
 
   @Auth(Role.ATTACKER)
   @Patch('attack')
-  async handleAttack(user: any, @Body() body: AttackDto) {
-    return await this.appService.handleAttack(user, body);
+  async handleAttack(@Req() req: any, @Body() body: AttackDto) {
+    return await this.appService.handleAttack(req.user, body);
   }
 
   @Auth(Role.DEFENDER)
   @Post('ship/:ship_type')
   async handlePlaceShip(
-    user: any,
+    @Req() req: any,
     @Param() params: PlaceShipParam,
     @Body() body: ShipDto,
   ) {
-    return await this.appService.handlePlaceShip(user, params.ship_type, body);
+    return await this.appService.handlePlaceShip(
+      req.user,
+      params.ship_type,
+      body,
+    );
   }
 
   @Auth(Role.DEFENDER, Role.ATTACKER)
   @Get('game/history')
-  async handleGetStatus(user: any) {
-    return await this.appService.handleGetStatus(user);
+  async handleGetStatus(@Req() req: any) {
+    return await this.appService.handleGetStatus(req.user);
   }
 }
