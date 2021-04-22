@@ -26,16 +26,19 @@ export class CoordinateService {
     if (is_hit) newCoord.hit_time = new Date();
     return newCoord;
   }
+  private static validateShipCoordinates(ship: ShipDto, size: number) {
+    if (size <= 0) throw new Error('Invalid ship size');
+    badRequestExceptionThrower(
+      (ship.is_verticle && ship.start_y + size - 1 > BOARD_SIZE) ||
+        (!ship.is_verticle && ship.start_x + size - 1 > BOARD_SIZE),
+      'ship coordinates cannot be outside board',
+    );
+  }
   createShipCoords(ship: ShipDto, shipType: ShipType): Coordinate[] {
     const coordinates: Coordinate[] = [];
     const { start_x, start_y, is_verticle } = ship;
     const size = shipSize[shipType];
-    if (size <= 0) throw new Error('Invalid ship size');
-    badRequestExceptionThrower(
-      (is_verticle && start_y + size - 1 > BOARD_SIZE) ||
-        (!is_verticle && start_x + size - 1 > BOARD_SIZE),
-      'ship coordinates cannot be outside board',
-    );
+    CoordinateService.validateShipCoordinates(ship, size);
     for (const i of Array(size).keys()) {
       const coordinate = new this.coordModel();
       coordinate.x = is_verticle ? start_x : start_x + i;
