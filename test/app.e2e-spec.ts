@@ -373,8 +373,8 @@ describe('App (e2e)', () => {
 
   // place first group of ships
   for (const ship of mockData1) {
-    it('should place first ship group', async (done) => {
-      await request(app.getHttpServer())
+    it('should place first ship group', () => {
+      return request(app.getHttpServer())
         .post(map[ship.key].url)
         .set('Authorization', 'bearer ' + token)
         .send({
@@ -387,7 +387,6 @@ describe('App (e2e)', () => {
           // check if ship placed in correct position
           testCoordinates(body.coordinates, ship, map[ship.key].size);
         });
-      done();
     });
   }
 
