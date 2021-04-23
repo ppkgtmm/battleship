@@ -35,5 +35,5 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
          
     - run: yarn install
-    - run: DB_URL=${DB_URL} PRIVATE_KEY=${PRIVATE_KEY} yarn build --if-present
+    - run: DB_URL=${DB_URL} PRIVATE_KEY=${PRIVATE_KEY} yarn build
     - run: DB_URL=${DB_URL} PRIVATE_KEY=${PRIVATE_KEY} yarn test:e2e
