@@ -832,5 +832,6 @@ describe('App (e2e)', () => {
 
   afterAll(async (done) => {
     await mongoose.connection.close();
+    await app.close();
   });
 });
