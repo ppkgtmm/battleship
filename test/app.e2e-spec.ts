@@ -372,23 +372,41 @@ describe('App (e2e)', () => {
   });
 
   // place first group of ships
-  for (const ship of mockData1) {
-    it('should place first ship group', () => {
-      return request(app.getHttpServer())
-        .post(map[ship.key].url)
-        .set('Authorization', 'bearer ' + token)
-        .send({
-          ...ship,
-        })
-        .expect(201)
-        .expect(({ body }) => {
-          // check response body
-          testShipResponse(body, game_id, map[ship.key].type);
-          // check if ship placed in correct position
-          testCoordinates(body.coordinates, ship, map[ship.key].size);
-        });
-    });
-  }
+  test.each(mockData1)('should place first ship group', (ship) => {
+    console.log(ship);
+    return request(app.getHttpServer())
+          .post(map[ship.key].url)
+          .set('Authorization', 'bearer ' + token)
+          .send({
+            ...ship,
+          })
+          .expect(201)
+          .expect(({ body }) => {
+            // check response body
+            testShipResponse(body, game_id, map[ship.key].type);
+            // check if ship placed in correct position
+            testCoordinates(body.coordinates, ship, map[ship.key].size);
+          });
+      });
+  });
+
+  // for (const ship of mockData1) {
+  //   it('should place first ship group', () => {
+  //     return request(app.getHttpServer())
+  //       .post(map[ship.key].url)
+  //       .set('Authorization', 'bearer ' + token)
+  //       .send({
+  //         ...ship,
+  //       })
+  //       .expect(201)
+  //       .expect(({ body }) => {
+  //         // check response body
+  //         testShipResponse(body, game_id, map[ship.key].type);
+  //         // check if ship placed in correct position
+  //         testCoordinates(body.coordinates, ship, map[ship.key].size);
+  //       });
+  //   });
+  // }
 
   // deny attacker from attacking since all ships are not placed
   it('should not allow attacks until all set', () => {
@@ -428,7 +446,7 @@ describe('App (e2e)', () => {
         .send(ship)
         .expect(400)
         .expect(({ body }) => {
-          testBadInput(body, 'ship cannot be placed within game board');
+          testBadInput(body, 'ship coordinates cannot be outside board');
         });
     });
   }
