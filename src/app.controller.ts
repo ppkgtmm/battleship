@@ -44,7 +44,7 @@ export class AppController {
   }
 
   @Auth(Role.DEFENDER, Role.ATTACKER)
-  @Get('game/history')
+  @Get('game/status')
   async handleGetStatus(@Req() req: any) {
     return await this.appService.handleGetStatus(req.user);
   }
