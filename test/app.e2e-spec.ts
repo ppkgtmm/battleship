@@ -387,7 +387,7 @@ describe('App (e2e)', () => {
           // check if ship placed in correct position
           testCoordinates(body.coordinates, ship, map[ship.key].size);
         });
-    });
+    }, 30000);
   }
 
   // deny attacker from attacking since all ships are not placed
@@ -416,7 +416,7 @@ describe('App (e2e)', () => {
             'ships must have least one square between them in all directions',
           );
         });
-    });
+    }, 30000);
   }
 
   // check if can prevent ships from being placed out of board
@@ -430,7 +430,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testBadInput(body, 'ship cannot be placed within game board');
         });
-    });
+    }, 30000);
   }
 
   // deny attacker from attacking since all ships are not placed
@@ -459,7 +459,7 @@ describe('App (e2e)', () => {
           testShipResponse(body, game_id, map[ship.key].type);
           testCoordinates(body.coordinates, ship, map[ship.key].size);
         });
-    });
+    }, 30000);
   }
 
   // should deny excessive amount of ships
@@ -475,7 +475,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testBadInput(body, `maximum amount of ${map[ship.key].type} reached`);
         });
-    });
+    }, 30000);
   }
 
   // defender cannot attack
@@ -606,7 +606,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testAttack(body, data, type, moves, misses);
         });
-    });
+    }, 30000);
   }
 
   // should not allow duplicate moves
@@ -620,7 +620,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testBadInput(body, 'coordinate already hit');
         });
-    });
+    }, 30000);
   }
 
   // show game status to defender
@@ -729,7 +729,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testAttack(body, data, type, moves, misses);
         });
-    });
+    }, 30000);
   }
 
   // cannot attack because game is over (no ships left to be sunk)
@@ -743,7 +743,7 @@ describe('App (e2e)', () => {
         .expect(({ body }) => {
           testBadInput(body, 'all ships have been sunk already');
         });
-    });
+    }, 30000);
   }
 
   it('should show correct status to defender', () => {
