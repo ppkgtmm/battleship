@@ -375,18 +375,17 @@ describe('App (e2e)', () => {
   test.each(mockData1)('should place first ship group', (ship) => {
     console.log(ship);
     return request(app.getHttpServer())
-          .post(map[ship.key].url)
-          .set('Authorization', 'bearer ' + token)
-          .send({
-            ...ship,
-          })
-          .expect(201)
-          .expect(({ body }) => {
-            // check response body
-            testShipResponse(body, game_id, map[ship.key].type);
-            // check if ship placed in correct position
-            testCoordinates(body.coordinates, ship, map[ship.key].size);
-          });
+      .post(map[ship.key].url)
+      .set('Authorization', 'bearer ' + token)
+      .send({
+        ...ship,
+      })
+      .expect(201)
+      .expect(({ body }) => {
+        // check response body
+        testShipResponse(body, game_id, map[ship.key].type);
+        // check if ship placed in correct position
+        testCoordinates(body.coordinates, ship, map[ship.key].size);
       });
   });
 
