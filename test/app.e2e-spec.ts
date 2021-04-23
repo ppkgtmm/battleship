@@ -60,6 +60,7 @@ describe('App (e2e)', () => {
 
   // initialize app
   beforeAll(async () => {
+    // await mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -829,7 +830,7 @@ describe('App (e2e)', () => {
       });
   });
 
-  afterAll((done) => {
-    mongoose.disconnect(done);
+  afterAll(async (done) => {
+    await mongoose.connection.close();
   });
 });
