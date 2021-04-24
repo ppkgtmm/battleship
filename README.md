@@ -72,7 +72,7 @@ GET api/game/status/
 4. Place ship endpoint
 * Lets defender with valid credentials place a ship per request. Remember to specify ship_type
 ```http
-POST /api/ship/:ship_type/
+POST api/ship/:ship_type/
 ```
 #### Request Body
 ```json
