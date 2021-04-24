@@ -7,7 +7,7 @@ import {
   getHitResult,
   HitResult,
   JWTPayload,
-  maxShips,
+  numShips,
   Role,
   ShipDto,
   ShipType,
@@ -85,7 +85,7 @@ export class AppService {
     data: ShipDto,
   ) {
     badRequestExceptionThrower(
-      authData[shipType] == maxShips[shipType],
+      authData[shipType] == numShips[shipType],
       `maximum amount of ${shipType} reached`,
     );
     const shipCoordinates = this.coordinateService.createShipCoords(

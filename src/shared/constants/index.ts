@@ -1,10 +1,10 @@
 export const BOARD_SIZE = 10;
 export const TOTAL_SHIPS = 10;
 
-export const MAX_BATTLESHIP = 1;
-export const MAX_CRUISER = 2;
-export const MAX_DESTROYER = 3;
-export const MAX_SUBMARINE = 4;
+export const NUM_BATTLESHIP = 1;
+export const NUM_CRUISER = 2;
+export const NUM_DESTROYER = 3;
+export const NUM_SUBMARINE = 4;
 
 export const BATTLESHIP_SIZE = 4;
 export const CRUISER_SIZE = 3;
@@ -20,11 +20,11 @@ export const shipSize = {
   submarine: SUBMARINE_SIZE,
 };
 
-export const maxShips = {
-  battleship: MAX_BATTLESHIP,
-  cruiser: MAX_CRUISER,
-  destroyer: MAX_DESTROYER,
-  submarine: MAX_SUBMARINE,
+export const numShips = {
+  battleship: NUM_BATTLESHIP,
+  cruiser: NUM_CRUISER,
+  destroyer: NUM_DESTROYER,
+  submarine: NUM_SUBMARINE,
 };
 
 export const coordError = {
