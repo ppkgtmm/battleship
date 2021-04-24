@@ -60,7 +60,6 @@ describe('App (e2e)', () => {
 
   // initialize app
   beforeAll(async () => {
-    jest.setTimeout(10000);
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -231,13 +230,10 @@ describe('App (e2e)', () => {
     return request(app.getHttpServer())
       .post(emptyShipTypeUrl)
       .set('Authorization', 'bearer ' + token)
-      .expect(400)
+      .expect(404)
       .expect(({ body }) => {
         expect(body).toBeDefined();
         expect(body.error).toBeDefined();
-
-        expect(body.error.ship_type).toBeUndefined();
-        expect(body.error.ship_type).toHaveLength(2);
       });
   });
 
@@ -246,12 +242,12 @@ describe('App (e2e)', () => {
     return request(app.getHttpServer())
       .post(invalidPlaceShipUrl)
       .set('Authorization', 'bearer ' + token)
+      .send(validBody)
       .expect(400)
       .expect(({ body }) => {
         expect(body).toBeDefined();
         expect(body.error).toBeDefined();
-
-        expect(body.error.ship_type).toBeUndefined();
+        expect(body.error.ship_type).toBeDefined();
         expect(body.error.ship_type).toHaveLength(1);
       });
   });
@@ -350,6 +346,12 @@ describe('App (e2e)', () => {
         expect(body).toEqual({
           attacks: null,
           ships: [],
+          game: {
+            game_over: false,
+            hit_count: 0,
+            miss_count: 0,
+            ship_sunk: 0,
+          },
         });
       });
   });
@@ -367,6 +369,12 @@ describe('App (e2e)', () => {
         expect(body).toEqual({
           attacks: null,
           ships: [],
+          game: {
+            game_over: false,
+            hit_count: 0,
+            miss_count: 0,
+            ship_sunk: 0,
+          },
         });
       });
   });
@@ -590,6 +598,12 @@ describe('App (e2e)', () => {
         expect(body).toEqual({
           attacks: null,
           ships: [],
+          game: {
+            game_over: false,
+            hit_count: 0,
+            miss_count: 0,
+            ship_sunk: 0,
+          },
         });
       });
   });
@@ -632,6 +646,7 @@ describe('App (e2e)', () => {
       .expect(({ body }) => {
         expect(body).toBeDefined();
         expect(body.attacks).toBeDefined();
+        expect(body.game).toBeDefined();
         expect(body.ships).toBeDefined();
         expect(body.ships).toHaveLength(shipStatusDefender.length);
         // for each expected ship
@@ -653,15 +668,15 @@ describe('App (e2e)', () => {
         }
         expect(body.attacks.game).toBeDefined();
         expect(body.attacks.game).toEqual(game_id);
-        expect(body.attacks.game_over).toBeDefined();
-        expect(body.attacks.game_over).toBeFalsy();
+        expect(body.game.game_over).toBeDefined();
+        expect(body.game.game_over).toBeFalsy();
 
-        expect(body.attacks.miss_count).toBeDefined();
-        expect(body.attacks.hit_count).toBeDefined();
-        expect(body.attacks.ship_sunk).toBeDefined();
-        expect(body.attacks.miss_count).toEqual(miss_count);
-        expect(body.attacks.hit_count).toEqual(hit_count);
-        expect(body.attacks.ship_sunk).toEqual(ship_sunk);
+        expect(body.game.miss_count).toBeDefined();
+        expect(body.game.hit_count).toBeDefined();
+        expect(body.game.ship_sunk).toBeDefined();
+        expect(body.game.miss_count).toEqual(miss_count);
+        expect(body.game.hit_count).toEqual(hit_count);
+        expect(body.game.ship_sunk).toEqual(ship_sunk);
 
         expect(body.attacks.coord_hit).toBeDefined();
         testAttackedCoords(body.attacks.coord_hit, firstHalfAttack);
@@ -677,6 +692,7 @@ describe('App (e2e)', () => {
       .expect(({ body }) => {
         expect(body).toBeDefined();
         expect(body.attacks).toBeDefined();
+        expect(body.game).toBeDefined();
         expect(body.ships).toBeDefined();
         expect(body.ships).toHaveLength(shipStatusAttacker.length);
         // for each expected ship for attacker to see
@@ -693,15 +709,15 @@ describe('App (e2e)', () => {
         }
         expect(body.attacks.game).toBeDefined();
         expect(body.attacks.game).toEqual(game_id);
-        expect(body.attacks.game_over).toBeDefined();
-        expect(body.attacks.game_over).toBeFalsy();
+        expect(body.game.game_over).toBeDefined();
+        expect(body.game.game_over).toBeFalsy();
 
-        expect(body.attacks.miss_count).toBeDefined();
-        expect(body.attacks.hit_count).toBeDefined();
-        expect(body.attacks.ship_sunk).toBeDefined();
-        expect(body.attacks.miss_count).toEqual(miss_count);
-        expect(body.attacks.hit_count).toEqual(hit_count);
-        expect(body.attacks.ship_sunk).toEqual(ship_sunk);
+        expect(body.game.miss_count).toBeDefined();
+        expect(body.game.hit_count).toBeDefined();
+        expect(body.game.ship_sunk).toBeDefined();
+        expect(body.game.miss_count).toEqual(miss_count);
+        expect(body.game.hit_count).toEqual(hit_count);
+        expect(body.game.ship_sunk).toEqual(ship_sunk);
 
         expect(body.attacks.coord_hit).toBeDefined();
         testAttackedCoords(body.attacks.coord_hit, firstHalfAttack);
@@ -755,6 +771,7 @@ describe('App (e2e)', () => {
         const answer = [...mockData1, ...mockData2]; // all ships data
         expect(body).toBeDefined();
         expect(body.attacks).toBeDefined();
+        expect(body.game).toBeDefined();
         expect(body.ships).toBeDefined();
         expect(body.ships).toHaveLength(answer.length);
         for (const i in answer) {
@@ -770,15 +787,15 @@ describe('App (e2e)', () => {
         }
         expect(body.attacks.game).toBeDefined();
         expect(body.attacks.game).toEqual(game_id);
-        expect(body.attacks.game_over).toBeDefined();
-        expect(body.attacks.game_over).toBeTruthy(); // game over
+        expect(body.game.game_over).toBeDefined();
+        expect(body.game.game_over).toBeTruthy(); // game over
 
-        expect(body.attacks.miss_count).toBeDefined();
-        expect(body.attacks.hit_count).toBeDefined();
-        expect(body.attacks.ship_sunk).toBeDefined();
-        expect(body.attacks.hit_count).toEqual(moves - misses);
-        expect(body.attacks.miss_count).toEqual(misses);
-        expect(body.attacks.ship_sunk).toEqual(TOTAL_SHIPS);
+        expect(body.game.miss_count).toBeDefined();
+        expect(body.game.hit_count).toBeDefined();
+        expect(body.game.ship_sunk).toBeDefined();
+        expect(body.game.hit_count).toEqual(moves - misses);
+        expect(body.game.miss_count).toEqual(misses);
+        expect(body.game.ship_sunk).toEqual(TOTAL_SHIPS);
 
         expect(body.attacks.coord_hit).toBeDefined();
         testAttackedCoords(body.attacks.coord_hit, [
@@ -797,6 +814,7 @@ describe('App (e2e)', () => {
         const answer = [...mockData1, ...mockData2];
         expect(body).toBeDefined();
         expect(body.attacks).toBeDefined();
+        expect(body.game).toBeDefined();
         expect(body.ships).toBeDefined();
         expect(body.ships).toHaveLength(answer.length);
         for (const i in answer) {
@@ -812,15 +830,15 @@ describe('App (e2e)', () => {
         }
         expect(body.attacks.game).toBeDefined();
         expect(body.attacks.game).toEqual(game_id);
-        expect(body.attacks.game_over).toBeDefined();
-        expect(body.attacks.game_over).toBeTruthy(); // game over
+        expect(body.game.game_over).toBeDefined();
+        expect(body.game.game_over).toBeTruthy(); // game over
 
-        expect(body.attacks.miss_count).toBeDefined();
-        expect(body.attacks.hit_count).toBeDefined();
-        expect(body.attacks.ship_sunk).toBeDefined();
-        expect(body.attacks.hit_count).toEqual(moves - misses);
-        expect(body.attacks.miss_count).toEqual(misses);
-        expect(body.attacks.ship_sunk).toEqual(TOTAL_SHIPS);
+        expect(body.game.miss_count).toBeDefined();
+        expect(body.game.hit_count).toBeDefined();
+        expect(body.game.ship_sunk).toBeDefined();
+        expect(body.game.hit_count).toEqual(moves - misses);
+        expect(body.game.miss_count).toEqual(misses);
+        expect(body.game.ship_sunk).toEqual(TOTAL_SHIPS);
 
         expect(body.attacks.coord_hit).toBeDefined();
         testAttackedCoords(body.attacks.coord_hit, [

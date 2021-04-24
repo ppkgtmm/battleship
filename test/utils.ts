@@ -68,15 +68,13 @@ export const testAttack = (
 
   if (data.status && data.status === 'miss') {
     expect(body.status).toEqual(data.status);
-    expect(body.message).toEqual('no ship is hit');
+    expect(body.message).toEqual('it was a miss');
   } else if (data.status && data.status === 'win') {
     expect(body.status).toEqual(data.status);
     expect(body.message).toEqual(
-      `You have completed the game in ${moves} moves with ${misses} miss shots`,
+      `you have completed the game in ${moves} moves with ${misses} miss shots`,
     );
   } else {
-    expect(body.status).toEqual('hit'); // if ship sunk by the attack, status will be told as a hit
-
     if (data.status && data.status === 'hit') {
       expect(body.message).toEqual('it was a hit'); // expected hit message
     } else if (data.status && data.status === 'sink') {

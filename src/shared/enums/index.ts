@@ -12,5 +12,6 @@ export enum ShipType {
 export enum HitResult {
   HIT = 'hit',
   MISS = 'miss',
-  SUNK = 'sunk',
+  SUNK = 'sink',
+  WIN = 'win',
 }

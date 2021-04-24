@@ -43,7 +43,10 @@ export class GameService {
     return await this.gameModel.findOne(payload).exec();
   }
 
-  async updateGameStatus(authData: JWTPayload & Game, attackResult: HitResult) {
+  async updateGameStatus(
+    authData: JWTPayload & GameDocument,
+    attackResult: HitResult,
+  ) {
     let game_over = authData.game_over;
     let ship_sunk = authData.ship_sunk;
     let hit_count = authData.hit_count;
@@ -53,20 +56,26 @@ export class GameService {
     if (attackResult === HitResult.SUNK) ship_sunk += 1;
     if (ship_sunk === TOTAL_SHIPS) game_over = true;
     return await this.gameModel
-      .findByIdAndUpdate(authData.id, {
-        game_over,
-        ship_sunk,
-        hit_count,
-        miss_count,
-      })
+      .findByIdAndUpdate(
+        authData.game_id,
+        { game_over, ship_sunk, hit_count, miss_count },
+        { new: true },
+      )
       .exec();
   }
 
-  async updateGameShipCount(authData: JWTPayload & Game, shipType: ShipType) {
+  async updateGameShipCount(
+    authData: JWTPayload & GameDocument,
+    shipType: ShipType,
+  ) {
     const query = {
       [shipType]: authData[shipType] + 1,
       total_ships: authData.total_ships + 1,
     };
-    return await this.gameModel.findByIdAndUpdate(authData.id, query).exec();
+    return await this.gameModel
+      .findByIdAndUpdate(authData.game_id, query, {
+        new: true,
+      })
+      .exec();
   }
 }

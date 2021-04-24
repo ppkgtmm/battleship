@@ -16,8 +16,8 @@ export function getCoordinateIndex(
 
 export function getHitResult(hitShip: Ship) {
   if (!hitShip) return HitResult.MISS;
-  if (hitShip.is_sunk) return HitResult.SUNK;
-  return HitResult.HIT;
+  if (!hitShip.is_sunk) return HitResult.HIT;
+  return HitResult.SUNK;
 }
 export function badRequestExceptionThrower(
   condition: boolean,

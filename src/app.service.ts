@@ -13,7 +13,7 @@ import {
   ShipType,
   TOTAL_SHIPS,
 } from './shared';
-import { Game, GameDocument } from './schemas';
+import { GameDocument } from './schemas';
 import { CoordinateService } from './coordinate/coordinate.service';
 import { ShipService } from './ship/ship.service';
 import { GameService } from './game/game.service';
@@ -30,9 +30,17 @@ export class AppService {
   ) {}
 
   private static getAttackResponse(
+    game: GameDocument,
     hitResult: HitResult,
     shipType: ShipType | undefined,
   ) {
+    if (game.game_over)
+      return {
+        status: HitResult.WIN,
+        message: `you have completed the game in ${
+          game.hit_count + game.miss_count
+        } moves with ${game.miss_count} miss shots`,
+      };
     if (hitResult !== HitResult.SUNK)
       return {
         status: hitResult,
@@ -45,7 +53,10 @@ export class AppService {
     };
   }
 
-  async handleAttack(authData: JWTPayload & Game, attackData: AttackDto) {
+  async handleAttack(
+    authData: JWTPayload & GameDocument,
+    attackData: AttackDto,
+  ) {
     badRequestExceptionThrower(
       authData.game_over,
       'all ships have been sunk already',
@@ -64,8 +75,8 @@ export class AppService {
       coordinate,
     );
     const hitResult = getHitResult(hitShip);
-    await this.gameService.updateGameStatus(authData, hitResult);
-    return AppService.getAttackResponse(hitResult, hitShip?.type);
+    const game = await this.gameService.updateGameStatus(authData, hitResult);
+    return AppService.getAttackResponse(game, hitResult, hitShip?.type);
   }
 
   async handlePlaceShip(
@@ -91,15 +102,16 @@ export class AppService {
   }
 
   async handleGetStatus(authData: GameDocument & JWTPayload) {
-    const { game_id } = authData;
+    const { game_id, game_over, hit_count, miss_count, ship_sunk } = authData;
     const history = await this.historyService.getBoardHistory(game_id);
     const shipStatus = await this.shipService.getAllShips(
       game_id,
-      authData.role == Role.ATTACKER,
+      authData.role === Role.ATTACKER,
     );
     return {
       attacks: history,
       ships: shipStatus,
+      game: { game_over, miss_count, hit_count, ship_sunk },
     };
   }
 

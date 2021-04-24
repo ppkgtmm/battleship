@@ -27,10 +27,10 @@ export class ErrorFilter implements ExceptionFilter {
         },
       });
     }
-    return {
+    return response.status(status).json({
       error: {
         message,
       },
-    };
+    });
   }
 }

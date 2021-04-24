@@ -42,8 +42,8 @@ export class ShipService {
     if (targetCoordIndex >= 0) {
       hitShip.coordinates[targetCoordIndex] = coordinate;
     }
-    const shipNotSUnk = ShipService.shipNotSunk(hitShip.coordinates);
-    if (!shipNotSUnk) hitShip.is_sunk = true;
+    const shipNotSunk = ShipService.shipNotSunk(hitShip.coordinates);
+    if (!shipNotSunk) hitShip.is_sunk = true;
     return await hitShip.save();
   }
 

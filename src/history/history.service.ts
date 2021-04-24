@@ -11,8 +11,9 @@ export class HistoryService {
     private historyModel: Model<HistoryDocument>,
   ) {}
 
-  private async createNewHistory(hitCoordinate: Coordinate) {
+  private async createNewHistory(game_id: string, hitCoordinate: Coordinate) {
     const newHistory = new this.historyModel();
+    newHistory.game = game_id;
     newHistory.coord_hit.push(hitCoordinate);
     return await newHistory.save();
   }
@@ -24,7 +25,7 @@ export class HistoryService {
   async getOrCreateBoardHistory(game_id: string, coordinate: Coordinate) {
     let history = await this.getBoardHistory(game_id);
     if (history) return { history, isNew: false };
-    history = await this.createNewHistory(coordinate);
+    history = await this.createNewHistory(game_id, coordinate);
     return { history, isNew: true };
   }
 
