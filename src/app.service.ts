@@ -22,11 +22,11 @@ import { AuthProvider } from './game/auth/auth.provider';
 @Injectable()
 export class AppService {
   constructor(
-    private historyService: HistoryService,
-    private coordinateService: CoordinateService,
-    private shipService: ShipService,
-    private gameService: GameService,
-    private authProvider: AuthProvider,
+    private readonly historyService: HistoryService,
+    private readonly coordinateService: CoordinateService,
+    private readonly shipService: ShipService,
+    private readonly gameService: GameService,
+    private readonly authProvider: AuthProvider,
   ) {}
 
   private static getAttackResponse(

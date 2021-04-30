@@ -15,7 +15,7 @@ import {
 export class GameService {
   constructor(
     @InjectModel(Game.name)
-    private gameModel: Model<GameDocument>,
+    private readonly gameModel: Model<GameDocument>,
   ) {}
 
   async createGame(): Promise<GameDocument> {

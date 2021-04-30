@@ -8,7 +8,7 @@ import { badRequestExceptionThrower, getCoordinateIndex } from '../shared';
 export class HistoryService {
   constructor(
     @InjectModel(History.name)
-    private historyModel: Model<HistoryDocument>,
+    private readonly historyModel: Model<HistoryDocument>,
   ) {}
 
   private async createNewHistory(game_id: string, hitCoordinate: Coordinate) {

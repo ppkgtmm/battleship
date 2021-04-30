@@ -5,7 +5,7 @@ import { AuthProvider } from '../auth.provider';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private authProvider: AuthProvider) {
+  constructor(private readonly authProvider: AuthProvider) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,

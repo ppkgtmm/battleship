@@ -15,7 +15,7 @@ import { InjectModel } from '@nestjs/mongoose';
 export class ShipService {
   constructor(
     @InjectModel(Ship.name)
-    private shipModel: Model<ShipDocument>,
+    private readonly shipModel: Model<ShipDocument>,
   ) {}
   async getShipByCoordinate(game_id: string, coordinate: ICoordinate) {
     const { x, y } = coordinate;

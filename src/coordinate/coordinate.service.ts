@@ -15,7 +15,7 @@ import {
 export class CoordinateService {
   constructor(
     @InjectModel(Coordinate.name)
-    private coordModel: Model<CoordDocument>,
+    private readonly coordModel: Model<CoordDocument>,
   ) {}
 
   createCoordObject(hitCoordinate: ICoordinate, is_hit: boolean) {
