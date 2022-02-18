@@ -42,20 +42,20 @@
 ## Usage
 #### URL
 ```http
-http://localhost:3000/
+"http://localhost:3000/"
 ``` 
 #### Paths
 1. Create new game endpoint
 
 * Creates a new game. Anyone who hit this endpoint will become game defender
 ```http
-POST api/game/new/
+POST "api/game/new/"
 ```
 2. Enter game endpoint
 
 * Lets user enter the game as attacker
 ```http
-PATCH api/game/enter/
+PATCH "api/game/enter/"
 ```
 #### Request Body
 ```json
@@ -67,12 +67,12 @@ PATCH api/game/enter/
 
 * Provides game status to attacker or defender. Valid credentials needed. 
 ```http
-GET api/game/status/
+GET "api/game/status/"
 ```
 4. Place ship endpoint
 * Lets defender with valid credentials place a ship per request. Remember to specify ship_type
 ```http
-POST api/ship/:ship_type/
+POST "api/ship/:ship_type/"
 ```
 #### Request Body
 ```json
@@ -86,7 +86,7 @@ POST api/ship/:ship_type/
 
 * Lets attacker with valid credentials make attacks to the ships
 ```http
-PATCH api/attack/
+PATCH "api/attack/"
 ```
 #### Request Body
 ```json
